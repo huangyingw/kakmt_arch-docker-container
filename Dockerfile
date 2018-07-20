@@ -32,6 +32,7 @@ RUN pacman --noconfirm -Syu \
 		ninja \
 	&& pacman --noconfirm -Scc \
 	# make neovim available to use as vim
+	# below is cited from https://aur.archlinux.org/packages/neovim-symlinks
 	&& cd /usr/bin \
 	&& echo -e '#!/bin/sh\nexec nvim -e "$@"'  > ex \
 	&& echo -e '#!/bin/sh\nexec nvim -E "$@"'  > exim \
