@@ -1,0 +1,53 @@
+FROM archlinux/base
+
+RUN pacman --noconfirm -Syu \
+		autoconf \
+		automake \
+		binutils \
+		bison \
+		fakeroot \
+		file \
+		gawk \
+		gcc \
+		gettext \
+		grep \
+		groff \
+		gzip \
+		libtool \
+		make \
+		man-db \
+		man-pages \
+		patch \
+		pkgconf \
+		sudo \
+		systemd \
+		texinfo \
+		util-linux \
+		which \
+	&& pacman --noconfirm -S \
+		fish \
+		git \
+		meson \
+		neovim \
+		ninja \
+	&& pacman --noconfirm -Scc \
+	# make neovim available to use as vim
+	&& cd /usr/bin \
+	&& echo -e '#!/bin/sh\nexec nvim -e "$@"'  > ex \
+	&& echo -e '#!/bin/sh\nexec nvim -E "$@"'  > exim \
+	&& echo -e '#!/bin/sh\nexec nvim -RZ "$@"' > rview \
+	&& echo -e '#!/bin/sh\nexec nvim -Z "$@"'  > rvim \
+	&& echo -e '#!/bin/sh\nexec nvim -R "$@"'  > view \
+	&& echo -e '#!/bin/sh\nexec nvim -d "$@"'  > vimdiff \
+	&& chmod 755 ex* rvi* view vimdiff \
+	&& for _link in edit vedit vi vim; do ln -s nvim $_link; done
+
+COPY pacman.conf /etc/pacman.conf
+COPY sudoers /etc/sudoers
+
+RUN useradd -m -G wheel archer
+
+USER archer
+WORKDIR /home/archer/
+
+CMD /usr/bin/fish
