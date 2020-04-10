@@ -19,6 +19,8 @@ RUN pacman --noconfirm -Syu \
 		man-pages \
 		patch \
 		pkgconf \
+		procps-ng \
+		strace \
 		sudo \
 		systemd \
 		texinfo \
