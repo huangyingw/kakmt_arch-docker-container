@@ -1,5 +1,7 @@
 FROM archlinux/base
 
+ARG USERNAME
+
 RUN pacman --noconfirm -Syu \
 		autoconf \
 		automake \
@@ -48,9 +50,9 @@ RUN pacman --noconfirm -Syu \
 COPY pacman.conf /etc/pacman.conf
 COPY sudoers /etc/sudoers
 
-RUN useradd -m -G wheel archer
+RUN useradd -m -G wheel "$USERNAME"
 
-USER archer
-WORKDIR /home/archer/
+USER "$USERNAME"
+WORKDIR "/home/$USERNAME/"
 
 CMD /usr/bin/fish

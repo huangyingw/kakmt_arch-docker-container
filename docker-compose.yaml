@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  arch:
+    build:
+      context: .
+      args:
+        - USERNAME=archer
+    volumes:
+      - ./workspace/:/home/archer/workspace
