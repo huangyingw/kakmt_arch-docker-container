@@ -1,34 +1,8 @@
-FROM archlinux/base
+FROM archlinux:base-devel
 
 ARG USERNAME
 
-RUN pacman --noconfirm -Syu \
-		autoconf \
-		automake \
-		binutils \
-		bison \
-		fakeroot \
-		file \
-		gawk \
-		gcc \
-		gettext \
-		grep \
-		groff \
-		gzip \
-		libtool \
-		make \
-		man-db \
-		man-pages \
-		patch \
-		pkgconf \
-		procps-ng \
-		strace \
-		sudo \
-		systemd \
-		texinfo \
-		util-linux \
-		which \
-	&& pacman --noconfirm -S \
+RUN	pacman --noconfirm -S \
 		fish \
 		git \
 		meson \
