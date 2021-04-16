@@ -2,7 +2,7 @@ FROM archlinux:base-devel
 
 ARG USERNAME
 
-RUN	pacman --noconfirm -S \
+RUN	pacman --noconfirm -Syu \
 		fish \
 		git \
 		meson \
