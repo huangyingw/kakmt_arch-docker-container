@@ -1,4 +1,8 @@
 #!/bin/bash
-SCRIPT=$(realpath "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
-cd "$SCRIPTPATH"
+pacman --noconfirm -Syu \
+    fish \
+    git \
+    meson \
+    neovim \
+    ninja \
+    && pacman --noconfirm -Scc
