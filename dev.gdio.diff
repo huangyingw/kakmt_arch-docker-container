@@ -44,15 +44,31 @@ rename from docker-compose.yaml
 rename to docker-compose.yml
 diff --git a/setup.sh b/setup.sh
 new file mode 100755
-index 0000000..ae1e413
+index 0000000..3209b20
 --- /dev/null
 +++ ./setup.sh
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,12 @@
 +#!/bin/bash
++
 +pacman --noconfirm -Syu \
-+    fish \
-+    git \
-+    meson \
-+    neovim \
-+    ninja \
-+    && pacman --noconfirm -Scc
++    mosh \
++    zsh
++
++ZSH=$(which zsh)
++
++if [ "$ZSH" != "$SHELL" ]
++then
++    chsh -s "$ZSH"
++fi
+diff --git a/setup.sh.lsh b/setup.sh.lsh
+new file mode 100755
+index 0000000..5846710
+--- /dev/null
++++ ./setup.sh.lsh
+@@ -0,0 +1,6 @@
++#!/bin/zsh
++SCRIPT=$(realpath "$0")
++SCRIPTPATH=$(dirname "$SCRIPT")
++cd "$SCRIPTPATH"
++
++docker build --no-cache .
