@@ -1,8 +1,12 @@
 #!/bin/bash
+
 pacman --noconfirm -Syu \
-    fish \
-    git \
-    meson \
-    neovim \
-    ninja \
-    && pacman --noconfirm -Scc
+    mosh \
+    zsh
+
+ZSH=$(which zsh)
+
+if [ "$ZSH" != "$SHELL" ]
+then
+    chsh -s "$ZSH"
+fi
