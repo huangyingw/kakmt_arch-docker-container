@@ -1,9 +1,12 @@
 version: '3.7'
 services:
-  arch:
+  mosh-server:
     build:
       context: .
-      args:
-        - USERNAME=archer
     volumes:
-      - ./workspace/:/home/archer/workspace
+      - ./var/logs/:/var/logs/
+    networks:
+      - mosh
+    command: /bin/sh -c "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"
+networks:
+  mosh: {}
