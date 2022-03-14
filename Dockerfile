@@ -1,10 +1,11 @@
 FROM archlinux:base-devel
 
-ARG USERNAME
-WORKDIR /root
-
-COPY ./*.sh /root/
-RUN /root/setup.sh 
+COPY ./*.sh /
+RUN /setup.sh 
 
 COPY pacman.conf /etc/pacman.conf
 COPY sudoers /etc/sudoers
+
+EXPOSE 60001
+
+CMD ["/bin/sh", "-c", "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"]
