@@ -2,6 +2,7 @@
 
 pacman --noconfirm -Syu \
     mosh \
+    tmux \
     zsh
 
 ZSH=$(which zsh)
