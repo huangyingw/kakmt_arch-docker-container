@@ -5,6 +5,15 @@ services:
       context: .
     volumes:
       - ./var/logs/:/var/logs/
+      - ./var/logs/:/var/logs/
+    networks:
+      - mosh
+    command: /bin/sh -c "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"
+  mosh-client:
+    build:
+      context: .
+    volumes:
+      - ./var/logs/:/var/logs/
     networks:
       - mosh
     command: /bin/sh -c "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"
