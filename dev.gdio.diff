@@ -1,13 +1,19 @@
+diff --git a/.gitignore b/.gitignore
+index e630e2b..e03b505 100644
+--- ./.gitignore
++++ ./.gitignore
+@@ -1 +1,2 @@
+ workspace/*
++var/
 diff --git a/Dockerfile b/Dockerfile
-index ba908af..3a870d1 100644
+index ba908af..93b9cb9 100644
 --- ./Dockerfile
 +++ ./Dockerfile
-@@ -1,32 +1,10 @@
+@@ -1,32 +1,11 @@
  FROM archlinux:base-devel
  
- ARG USERNAME
-+WORKDIR /root
- 
+-ARG USERNAME
+-
 -RUN	pacman --noconfirm -Syu \
 -		fish \
 -		git \
@@ -26,32 +32,87 @@ index ba908af..3a870d1 100644
 -	&& echo -e '#!/bin/sh\nexec nvim -d "$@"'  > vimdiff \
 -	&& chmod 755 ex* rvi* view vimdiff \
 -	&& for _link in edit vedit vi vim; do ln -s nvim $_link; done
-+COPY ./*.sh /root/
-+RUN /root/setup.sh 
++COPY ./*.sh /
++RUN /setup.sh 
  
  COPY pacman.conf /etc/pacman.conf
  COPY sudoers /etc/sudoers
--
+ 
 -RUN useradd -m -G wheel "$USERNAME"
 -
 -USER "$USERNAME"
 -WORKDIR "/home/$USERNAME/"
--
++EXPOSE 60001
+ 
 -CMD /usr/bin/fish
-diff --git a/docker-compose.yaml b/docker-compose.yml
-similarity index 100%
-rename from docker-compose.yaml
-rename to docker-compose.yml
++CMD ["/bin/sh", "-c", "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"]
+diff --git a/docker-compose.yaml b/docker-compose.yaml
+deleted file mode 100644
+index 31bacce..0000000
+--- ./docker-compose.yaml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-version: '3.7'
+-services:
+-  arch:
+-    build:
+-      context: .
+-      args:
+-        - USERNAME=archer
+-    volumes:
+-      - ./workspace/:/home/archer/workspace
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+index 0000000..5e91300
+--- /dev/null
++++ ./docker-compose.yml
+@@ -0,0 +1,21 @@
++version: '3.7'
++services:
++  mosh-server:
++    build:
++      context: .
++    volumes:
++      - ./var/logs/:/var/logs/
++      - ./var/logs/:/var/logs/
++    networks:
++      - mosh
++    command: /bin/sh -c "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"
++  mosh-client:
++    build:
++      context: .
++    volumes:
++      - ./var/logs/:/var/logs/
++    networks:
++      - mosh
++    command: /bin/sh -c "/entrypoint.sh 2>&1 | tee /var/logs/containner.log"
++networks:
++  mosh: {}
+diff --git a/entrypoint.sh b/entrypoint.sh
+new file mode 100755
+index 0000000..e8552c4
+--- /dev/null
++++ ./entrypoint.sh
+@@ -0,0 +1,8 @@
++#!/bin/zsh
++
++mosh-server
++
++while true
++do
++    :
++done
 diff --git a/setup.sh b/setup.sh
 new file mode 100755
-index 0000000..3209b20
+index 0000000..639add2
 --- /dev/null
 +++ ./setup.sh
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,13 @@
 +#!/bin/bash
 +
 +pacman --noconfirm -Syu \
 +    mosh \
++    tmux \
 +    zsh
 +
 +ZSH=$(which zsh)
@@ -62,7 +123,7 @@ index 0000000..3209b20
 +fi
 diff --git a/setup.sh.lsh b/setup.sh.lsh
 new file mode 100755
-index 0000000..5846710
+index 0000000..2350b44
 --- /dev/null
 +++ ./setup.sh.lsh
 @@ -0,0 +1,6 @@
@@ -71,4 +132,4 @@ index 0000000..5846710
 +SCRIPTPATH=$(dirname "$SCRIPT")
 +cd "$SCRIPTPATH"
 +
-+docker build --no-cache .
++docker build .
